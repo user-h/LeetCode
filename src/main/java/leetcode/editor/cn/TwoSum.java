@@ -26,7 +26,7 @@ import java.util.Map;
 public class TwoSum{
     public static void main(String[] args){
         Solution solution = new TwoSum().new Solution();
-        int[] nums = new int[]{3, 3};
+        int[] nums = new int[]{3, 3};   //2,5,5,11
         int target = 6;
         int[] ints = solution.twoSum(nums, target);
         for (int i = 0; i < ints.length; i++) {
@@ -36,22 +36,37 @@ public class TwoSum{
 //leetcode submit region begin(Prohibit modification and deletion)
 class Solution {
     public int[] twoSum(int[] nums, int target) {
-        return twoSum3(nums, target);
+        return twoSum4(nums, target);
     }
+
+    /**
+     * 4.一遍哈希表
+     * 插入时检查是否已存在符合条件的值
+     */
+    public int[] twoSum4(int[] nums, int target){
+        Map<Integer, Integer> map = new HashMap();
+        for (int i = 0; i < nums.length; i++) {
+            int findNum  = target - nums[i];
+            if (map.containsKey(findNum)) {
+                return new int[]{i, map.get(findNum)};
+            }
+            map.put(nums[i], i);
+        }
+        throw new IllegalArgumentException("No two sum solution");
+    }
+
     /**
      * 1. 暴力遍历 时间复杂度O(n^2)
      */
     public int[] twoSum1(int[] nums, int target){
-        int[] label = new int[2];
         for (int i = 0; i < nums.length-1; i++) {
             for (int j = 0; j <  nums.length; j++) {
                 if (nums[i] + nums[j] == target){
-                    label[0] = i;
-                    label[1] = j;
+                    return new int[]{i, j};
                 }
             }
         }
-        return label;
+        throw new IllegalArgumentException("No two sum solution");
     }
 
     /**
@@ -65,7 +80,7 @@ class Solution {
         int start = 0;  // 第一个数下标
         int end = nums.length-1;    // 第二个数下标
         int sum = 0;
-        while (start <= end) {
+        while (start < end) {
             sum = nums2[start] + nums2[end];    // 两个下标数之和
             if (sum == target) {   // 和等于目标值 保存值并跳出循环
                 label[0] = nums2[start];
@@ -92,7 +107,8 @@ class Solution {
     }
 
     /**
-     * 3. 利用空间换时间方式，用hashmap存储数组结构，key为值，value为下标。时间复杂度O(N)。
+     * 3. 两遍哈希表
+     * 利用空间换时间方式，用hashmap存储数组结构，key为值，value为下标。时间复杂度O(N)。
      * 局限:不能有重复值
      */
     public int[] twoSum3(int[] nums, int target){
@@ -104,11 +120,10 @@ class Solution {
 
         for (int i = 0; i < map.size(); i++) {
             if (map.containsKey(target - nums[i])) {     //map.get(target - nums[i]) != null
-                label[0] = i;
-                label[1] = map.get(target - nums[i]);
+                return new int[]{i, map.get(target - nums[i])};
             }
         }
-        return label;
+        throw new IllegalArgumentException("No two sum solution");
     }
 }
 //leetcode submit region end(Prohibit modification and deletion)
